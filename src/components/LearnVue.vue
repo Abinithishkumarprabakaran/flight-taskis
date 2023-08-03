@@ -59,21 +59,29 @@
     </v-row>
     <v-row class="details-row" style="width: 100%">
       <v-col cols="12" sm="7">
+        <!-- Traveller Details -->
         <v-row>
           <v-col cols="12" sm="12">
             <v-card>
               <div v-for="index in Adult" :key="index">
-                <v-card-title>{{
-                  firstName && title && lastName ? title + " " + firstName + " " + lastName : "Adult"
-                }}</v-card-title>
-                <v-card-text style="padding-bottom: 25px">
+                <div>
+                  <v-card-title>{{
+                    firstName && title && lastName
+                      ? title + " " + firstName + " " + lastName
+                      : "Adult"
+                  }}
+                  <v-icon @click="Doup()">fas fa-angle-up</v-icon>
+                  <v-icon @click="dropDown()">fas fa-angle-down</v-icon>
+                  </v-card-title>
+                </div>
+                <v-card-text style="padding-bottom: 25px" v-if="dropdown || up">
                   <v-row class="person" style="padding-bottom: 12px">
                     <v-col cols="12" sm="2">
                       <span>Title</span>
                       <v-select
                         label="Title"
                         :items="['Mr', 'Miss', 'Mrs']"
-                        v-model="title"
+                        v-model="Adult.title"
                         hide-details
                         outlined
                         dense
@@ -82,7 +90,7 @@
                     <v-col cols="12" sm="5">
                       <span>First Name/Given Name</span>
                       <v-text-field
-                        v-model="firstName"
+                        v-model="Adult.firstName"
                         label="First Name"
                         outlined
                         dense
@@ -92,7 +100,7 @@
                     <v-col cols="12" sm="5">
                       <span>Last Name/Surname</span>
                       <v-text-field
-                        v-model="lastName"
+                        v-model="Adult.lastName"
                         label="Last Name"
                         outlined
                         dense
@@ -103,10 +111,12 @@
                 </v-card-text>
               </div>
 
-              <div v-if="Child">
-                <div v-for="index in Child" :key="index">
+              <div v-if="ChildCount">
+                <div v-for="index in ChildCount" :key="index">
                   <v-card-title>{{
-                    firstName && title && lastName ? title + " " + firstName + " " + lastName : "Child"
+                    firstName && title && lastName
+                      ? title + " " + firstName + " " + lastName
+                      : "Child"
                   }}</v-card-title>
                   <v-card-text style="padding-bottom: 25px">
                     <v-row class="person" style="padding-bottom: 12px">
@@ -115,7 +125,7 @@
                         <v-select
                           label="Title"
                           :items="['Mr', 'Miss', 'Mrs']"
-                          v-model="title"
+                          v-model="Child.title"
                           hide-details
                           outlined
                           dense
@@ -124,7 +134,7 @@
                       <v-col cols="12" sm="5">
                         <span>First Name/Given Name</span>
                         <v-text-field
-                          v-model="firstName"
+                          v-model="Child.firstName"
                           label="First Name"
                           outlined
                           dense
@@ -134,7 +144,7 @@
                       <v-col cols="12" sm="5">
                         <span>Last Name/Surname</span>
                         <v-text-field
-                          v-model="lastName"
+                          v-model="Child.lastName"
                           label="Last Name"
                           outlined
                           dense
@@ -146,10 +156,12 @@
                 </div>
               </div>
 
-              <div v-if="Infant">
-                <div v-for="index in Infant" :key="index">
+              <div v-if="InfantCount">
+                <div v-for="index in InfantCount" :key="index">
                   <v-card-title>{{
-                    firstName && title && lastName ? title + " " + firstName + " " + lastName : "Infant"
+                    firstName && title && lastName
+                      ? title + " " + firstName + " " + lastName
+                      : "Infant"
                   }}</v-card-title>
                   <v-card-text style="padding-bottom: 25px">
                     <v-row class="person" style="padding-bottom: 12px">
@@ -158,7 +170,7 @@
                         <v-select
                           label="Title"
                           :items="['Mr', 'Miss', 'Mrs']"
-                          v-model="title"
+                          v-model="Infant.title"
                           hide-details
                           outlined
                           dense
@@ -167,7 +179,7 @@
                       <v-col cols="12" sm="5">
                         <span>First Name/Given Name</span>
                         <v-text-field
-                          v-model="firstName"
+                          v-model="Infant.firstName"
                           label="First Name"
                           outlined
                           dense
@@ -177,7 +189,7 @@
                       <v-col cols="12" sm="5">
                         <span>Last Name/Surname</span>
                         <v-text-field
-                          v-model="lastName"
+                          v-model="Infant.lastName"
                           label="Last Name"
                           outlined
                           dense
@@ -192,6 +204,7 @@
           </v-col>
         </v-row>
 
+        <!-- Seat Selections -->
         <v-row>
           <v-col cols="12">
             <v-card style="height: auto">
@@ -219,6 +232,7 @@
           </v-col>
         </v-row>
 
+        <!-- Emailing Ticket -->
         <v-row>
           <v-col cols="12" sm="12">
             <v-card>
@@ -253,6 +267,7 @@
           </v-col>
         </v-row>
 
+        <!-- Authorize for cab requirement -->
         <v-row>
           <v-col cols="12" sm="12">
             <v-card>
@@ -276,6 +291,7 @@
           </v-col>
         </v-row>
 
+        <!-- Terms and Conditions -->
         <v-row>
           <v-col cols="12" sm="12">
             <v-card>
@@ -371,9 +387,17 @@ export default {
           showFlightDetails: false,
         },
       ],
-      Adult: 2, /* Should be in true, Always */
-      Child: 0,
-      Infant: 0,
+      Adult: [
+        { title: "", firstName: "", lastName: "" },
+      ],
+      ChildCount: 0,
+      Child: [
+        { title: "", firstName: "", lastName: "" }
+      ],
+      InfantCount: 0,
+      Infant: [{ title: "", firstName: "", lastName: "" }],
+      dropdown: false,
+      up: false,
     };
   },
   methods: {
@@ -384,6 +408,12 @@ export default {
         style: "currency",
       });
     },
+    dropDown() {
+      this.dropdown=true;
+    },
+    Doup() {
+      this.up=false;
+    }
   },
 };
 </script>
